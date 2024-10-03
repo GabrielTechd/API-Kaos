@@ -40,6 +40,26 @@ router.get('/posts', async (req, res) => {
     }
 });
 
+// Rota para exibir um post pelo ID
+router.get('/posts/:id', async (req, res) => {
+    const { id } = req.params; // Obtém o ID da URL
+
+    try {
+        const post = await prisma.post.findUnique({
+            where: { id: id },
+        });
+
+        if (!post) {
+            return res.status(404).json({ message: "Post não encontrado." }); // Retorna 404 se o post não for encontrado
+        }
+
+        res.status(200).json(post); // Retorna o post encontrado
+    } catch (error) {
+        console.error("Erro ao buscar post:", error);
+        res.status(500).json({ message: "Falha ao buscar o post." });
+    }
+});
+
 // Rota para deletar um post pelo ID
 router.delete('/posts/:id', async (req, res) => {
     const { id } = req.params; // Obtém o ID da URL
